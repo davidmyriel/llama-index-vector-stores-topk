@@ -1,0 +1,60 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "llama-index-vector-stores-topk"
+version = "0.1.0"
+description = "LlamaIndex vector store for TopK: hybrid (BM25 + semantic) search, built-in embeddings, metadata filters and per-tenant partitions in one query."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10,<4.0"
+authors = [{ name = "TopK Team", email = "support@topk.io" }]
+keywords = [
+  "llama-index", "llamaindex", "topk", "vector store", "vectorstore", "hybrid search", "bm25",
+  "semantic search", "keyword search", "full-text search", "rag", "retriever", "agents",
+  "agent memory", "multi-tenant",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Database",
+]
+dependencies = ["llama-index-core>=0.13.0,<0.15", "topk-sdk>=0.15.0"]
+
+[project.urls]
+Homepage = "https://topk.io"
+Documentation = "https://github.com/topk-io/llama-index-vector-stores-topk#readme"
+Repository = "https://github.com/topk-io/llama-index-vector-stores-topk"
+Issues = "https://github.com/topk-io/llama-index-vector-stores-topk/issues"
+
+[dependency-groups]
+test = ["pytest>=8", "pytest-asyncio>=0.23", "ruff>=0.6"]
+
+[tool.hatch.build.targets.sdist]
+include = ["llama_index/", "README.md", "LICENSE", "llms.txt"]
+
+[tool.hatch.build.targets.wheel]
+include = ["llama_index/"]
+
+[tool.llamahub]
+contains_example = false
+import_path = "llama_index.vector_stores.topk"
+
+[tool.llamahub.class_authors]
+TopKVectorStore = "topk-io"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+markers = ["integration: needs TOPK_API_KEY and TOPK_REGION"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]

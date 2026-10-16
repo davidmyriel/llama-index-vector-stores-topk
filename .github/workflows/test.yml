@@ -1,0 +1,27 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      TOPK_API_KEY: ${{ secrets.TOPK_API_KEY }}
+      TOPK_REGION: ${{ vars.TOPK_REGION || 'aws-us-east-1-elastica' }}
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: uv venv && uv pip install -e . --group test
+      - run: uv run --no-sync ruff check .
+      - run: uv run --no-sync pytest tests/unit_tests
+      - name: Integration tests (live TopK)
+        if: env.TOPK_API_KEY != ''
+        run: uv run --no-sync pytest tests/integration_tests

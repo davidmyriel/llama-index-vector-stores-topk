@@ -1,0 +1,17 @@
+# llama-index-vector-stores-topk
+
+> LlamaIndex vector store for TopK, a hybrid retrieval engine. `TopKVectorStore` does keyword (BM25), semantic, vector and hybrid search, MetadataFilters and isolated per-tenant partitions in one query. With server-side embeddings (the default), TopK embeds nodes and queries itself, so no embedding model is needed.
+
+- Install: `pip install llama-index-vector-stores-topk`; env: `TOPK_API_KEY`, `TOPK_REGION` (aws-us-east-1-elastica | aws-eu-central-1-monstera | gcp-us-east4-aloe)
+- Import: `from llama_index.vector_stores.topk import TopKVectorStore, TopKServerSideEmbedding`
+- Create: `TopKVectorStore(collection_name="docs")` and build the index with `embed_model=TopKServerSideEmbedding()`; or `TopKVectorStore(collection_name="docs", server_side_embeddings=False)` with any LlamaIndex `embed_model`
+- Query modes (`vector_store_query_mode=`): `"default"` (dense), `"text_search"`/`"sparse"` (BM25), `"hybrid"` (dense + BM25 in one query, `alpha` = dense weight), `"mmr"` (bring-your-own embeddings only)
+- Filters: LlamaIndex `MetadataFilters` (`== != > >= < <= in nin contains any all text_match is_empty`, AND/OR/NOT, nested, dotted keys; `doc_id`/`ref_doc_id` match the source document) or native `topk_sdk.query` expressions on `field("metadata.<key>")`
+- Multi-tenant: `store.with_partition("user-42")`
+- Deletes: `index.delete_ref_doc(doc_id)`, `store.delete_nodes(node_ids=..., filters=...)`, `store.clear()`; same-id upserts replace nodes; don't reuse a just-deleted collection name
+
+## Docs
+
+- [README](https://github.com/topk-io/llama-index-vector-stores-topk#readme)
+- [Agent tools and memory (llama-index-tools-topk)](https://github.com/topk-io/llama-index-tools-topk)
+- [TopK docs index for LLMs](https://docs.topk.io/llms.txt)
